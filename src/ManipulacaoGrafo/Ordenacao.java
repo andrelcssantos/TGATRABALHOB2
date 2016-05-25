@@ -11,7 +11,7 @@ package ManipulacaoGrafo;
  */
 public class Ordenacao {
 
-    private static void quickSort(int[] vetor, int inicio, int fim) {
+    public void quickSort(int[] vetor, int inicio, int fim) {
         if (inicio < fim) {
             int posicaoPivo = separar(vetor, inicio, fim);
             quickSort(vetor, inicio, posicaoPivo - 1);

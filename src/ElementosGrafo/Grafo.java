@@ -1,15 +1,13 @@
 package ElementosGrafo;
 
-import ManipulacaoGrafo.CoresArestas;
+import ManipulacaoGrafo.Ordenacao;
 import ManipulacaoGrafo.Styles;
 
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
@@ -213,4 +211,35 @@ public class Grafo {
         return str.toString();
     }
 
+    /*
+    função Kruskal(G = (N,A): grafo): conjunto de arestas 
+        Ordenar A pelos valores de peso 
+        n := número de vértices em N 
+        T := {} 
+        Inicializar o conjunto de componentes (cada vértice de G é um componente) 
+            enquanto T contém menos de n-1 arestas e A não vazio 
+                fazer (u,v) := aresta de menor peso de A 
+                    A := A - (u,v) 
+                    comp_u := find(u) 
+                    comp_v := find(v) 
+                se comp_u ≠ comp_v 
+                    então merge(comp_u,comp_v) 
+                    T := T U {(u,v)} 
+                fim se 
+            fim enquanto 
+        retornar T
+    */
+    
+    public List<Aresta> kruskal(){
+        List<Aresta> arestaOrdenada = new Ordenacao().quickSort(vetor, componentesConexas, componentesConexas);//TODO
+        int n = vertices.size();
+        List<Aresta> listAresta = new ArrayList<>();
+        Vertice v = vertices.get(0);
+            while(listAresta.size() < n-1 && arestaOrdenada.size() > 0){
+                
+            }
+        
+        return listAresta;
+    }
+    
 }
