@@ -88,7 +88,7 @@ public class View  extends JFrame {
 //    LISTENER MENU KRUSKAL
 		subMenuKruskal.addActionListener(new java.awt.event.ActionListener() {
 					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						componetesConexas(evt);
+						Kruskal(evt);
 					}
 				});
 //    LISTENER MENU PRIM
@@ -149,8 +149,8 @@ public class View  extends JFrame {
 	}
 
 //    CHAMA O MÉTODO DE GERAÇÃO DE COMPONENTES CONEXAS DO GRAFO
-	private void componetesConexas(ActionEvent evt) {
-//		pane.getViewport().add(grafo.CompConexa());
+	private void Kruskal(ActionEvent evt) {
+		pane.getViewport().add(grafo.kruskal());
 		result.setText("Resultado: " + grafo.componentesConexas + " componentes conexas.");
 	}
 

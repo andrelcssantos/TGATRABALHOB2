@@ -167,7 +167,7 @@ public class Grafo {
         try {
 
             for (Vertice vertice : getVertices()) {
-                vertice.status = false;
+                vertice.visitado = false;
                 mxCell v = (mxCell) graph.insertVertex(parent, null, vertice
                         .getRotulo(), vertice.getPosicao().getX(), vertice
                         .getPosicao().getY(), vertice.getDimensao().getWidth(),
@@ -230,16 +230,20 @@ public class Grafo {
         retornar T
     */
     
-    public List<Aresta> kruskal(){
-        List<Aresta> arestaOrdenada = new Ordenacao().quickSort(vetor, componentesConexas, componentesConexas);//TODO
+    public Component kruskal(){
+        List<Aresta> arestaOrdenada = new Ordenacao().quickSort(arestas);//TODO
         int n = vertices.size();
         List<Aresta> listAresta = new ArrayList<>();
         Vertice v = vertices.get(0);
             while(listAresta.size() < n-1 && arestaOrdenada.size() > 0){
-                
+                Aresta A = arestaOrdenada.remove(0);
+                Vertice V1 = A.getFonte();
+                Vertice V2 = A.getDestino();
+                if(V1.equals(V2) && (V1.visitado == false || V2.visitado == false)) 
+                    listAresta.add(A);
             }
         
-        return listAresta;
+        return updateGrafo();
     }
     
 }

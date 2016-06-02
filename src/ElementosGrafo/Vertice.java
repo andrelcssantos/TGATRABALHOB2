@@ -11,7 +11,7 @@ public class Vertice {
     private String rotulo;
     private Point posicao;
     private Dimension dimensao;
-    public boolean status = false;
+    public boolean visitado = false;
     private List<Aresta> arestas;
 
 //    ADICIONA ARESTA A LISTA DO VÉTICE
