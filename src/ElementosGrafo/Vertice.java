@@ -11,8 +11,13 @@ public class Vertice {
     private String rotulo;
     private Point posicao;
     private Dimension dimensao;
-    public boolean visitado = false;
+    public int visitado = 0;
     private List<Aresta> arestas;
+    public int idCor;
+    
+    public Vertice() {
+        idCor = 1;
+    }
 
 //    ADICIONA ARESTA A LISTA DO VÉTICE
     public Vertice addAresta(Aresta aresta) {

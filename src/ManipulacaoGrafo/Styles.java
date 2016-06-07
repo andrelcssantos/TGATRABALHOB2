@@ -10,7 +10,7 @@ public class Styles {
     public mxStylesheet carregaStyles(mxGraph graph) {
 
 //    CARREGA AS CORES DAS ARESTAS
-        CoresArestas cores = new Styles().carrecaCores();
+//        CoresArestas cores = new Styles().carrecaCores();
 
 //    ESTILO VÉRTICE
         mxStylesheet stylesheet = graph.getStylesheet();
@@ -18,14 +18,26 @@ public class Styles {
         style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
         style.put(mxConstants.STYLE_FONTCOLOR, "#000000");
         stylesheet.putCellStyle("VERTICE", style);
+        
+        style = new Hashtable<String, Object>();
+        style.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_ELLIPSE);
+        style.put(mxConstants.STYLE_FONTCOLOR, "#000000");
+        style.put(mxConstants.STYLE_FILLCOLOR, "#FF0000");
+        stylesheet.putCellStyle("N_VERTICE", style);
+        
 //    ESTILOS ARESTAS
-        for (Cor cor : cores.getCores()) {
+
+        // Estilos para aresta Default.
             style = new Hashtable<String, Object>();
             style.put(mxConstants.STYLE_ENDARROW, mxConstants.NONE);
-            style.put(mxConstants.STYLE_STROKECOLOR, cor.getCodigoCor());
+            stylesheet.putCellStyle("ARESTA", style);
+
+        
+            style = new Hashtable<String, Object>();
+            style.put(mxConstants.STYLE_ENDARROW, mxConstants.NONE);
+            style.put(mxConstants.STYLE_STROKECOLOR, "#FF0000");
             style.put(mxConstants.STYLE_STROKEWIDTH, "2");
-            stylesheet.putCellStyle(cor.getNome(), style);
-        }
+            stylesheet.putCellStyle("N_ARESTA", style);
 
 //    ESTILO ARCO
         style = new Hashtable<String, Object>();
@@ -58,17 +70,11 @@ public class Styles {
 //    RETORNA AS CORES DAS ARESTAS
     public CoresArestas carrecaCores() {
 
-        Cor c1 = new Cor(1, "ARESTA_PRETA", "#000000");     //Preto
-        Cor c2 = new Cor(2, "ARESTA_AZUL", "#0000FF");      //Azul
-        Cor c3 = new Cor(3, "ARESTA_VERMELHA", "#FF0000");  //Vermelho
-        Cor c4 = new Cor(4, "ARESTA_AMERELA", "#FFFF00");   //Amarelo
-        Cor c5 = new Cor(5, "ARESTA_VERDE", "#008000");     //Verde
-        Cor c6 = new Cor(6, "ARESTA_MARROM", "#800000");    //Marron
-        Cor c7 = new Cor(7, "ARESTA_ROXA", "#800080");      //Roxo
+        Cor c = new Cor(1, "N_ARESTA", "#FF0000");  //Vermelho
 
         CoresArestas cores = new CoresArestas();
 
-        cores.addCores(c1, c2, c3, c4, c5, c6, c7);
+        cores.addCores(c);
         return cores;
     }
 }

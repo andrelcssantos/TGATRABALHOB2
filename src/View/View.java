@@ -151,7 +151,7 @@ public class View  extends JFrame {
 //    CHAMA O MÉTODO DE GERAÇÃO DE COMPONENTES CONEXAS DO GRAFO
 	private void Kruskal(ActionEvent evt) {
 		pane.getViewport().add(grafo.kruskal());
-		result.setText("Resultado: " + grafo.componentesConexas + " componentes conexas.");
+//		result.setText("Resultado: " + grafo.componentesConexas + " componentes conexas.");
 	}
 
 //    CHAMA O MÉTODO DE IDENTIFICAÇÃO DOS CICLOS DO GRAFO

@@ -13,6 +13,7 @@ import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
+import java.util.Hashtable;
 
 public class Grafo {
 
@@ -20,7 +21,9 @@ public class Grafo {
     private boolean direcionado = false;
     private List<Vertice> vertices;
     private List<Aresta> arestas;
-    public int componentesConexas = 0;
+    private List<Vertice> Vertices;
+    private List<Aresta> Arestas;
+    public int centro = 0;
     public List<Aresta> ArestasCiclos;
     public List<Vertice> VerticesCiclos;
     public List<List<Vertice>> Ciclos = new ArrayList<>();
@@ -47,7 +50,8 @@ public class Grafo {
 //    RETORNA LISTA DE VÉRTICES CONTIDOS NO GRAFO
     public List<Vertice> getVertices() {
         if (vertices == null) {
-            vertices = new ArrayList<Vertice>();
+            vertices = new ArrayList<>();
+            Vertices = new ArrayList<>();
         }
         return vertices;
     }
@@ -55,7 +59,8 @@ public class Grafo {
 //    RETORNA VÉRTICE ESPECÍFICO CONTIDO NO GRAFO
     public Vertice getVertice(int i) {
         if (vertices == null) {
-            vertices = new ArrayList<Vertice>();
+            vertices = new ArrayList<>();
+            Vertices = new ArrayList<>();
         }
         return vertices.get(i);
     }
@@ -69,7 +74,8 @@ public class Grafo {
 //    RETORNA LISTA DE ARESTAS CONTIDAS NO GRAFO
     public List<Aresta> getArestas() {
         if (arestas == null) {
-            arestas = new ArrayList<Aresta>();
+            arestas = new ArrayList<>();
+            Arestas = new ArrayList<>();
         }
         return arestas;
     }
@@ -93,61 +99,200 @@ public class Grafo {
 //    RETORNA O GRAFO COM SEU CENTRO MARCADO
     public Component centroGrafo() {
 
-        List<Vertice> listVertices = new ArrayList<>();
-        if (getArestas().size() == getVertices().size() - 1) {
-            if (getVertices().size() == 1) {
-                return updateGrafo();
+        if (centro == 0) {
+            for (Vertice V : vertices) {
+                V.idCor = 2;
+                Vertices.add(V);
             }
 
-            for (Aresta aresta : getArestas()) {
-                if (aresta.getFonte().equals(aresta.getDestino())) {
-                    return null;
+            for (Aresta A : arestas) {
+                A.idCor = 2;
+                Arestas.add(A);
+            }
+            centro++;
+
+            if (Arestas.size() == Vertices.size() - 1) {
+                if (Vertices.size() == 1) {
+                    return updateGrafo();
                 }
-            }
-            for (Vertice vertice : getVertices()) {
-                if (vertice.getArestas().size() == 1) {
-                    Aresta a = vertice.getArestas().get(0);
-                    if (a.getDestino().equals(vertice)) {
-                        listVertices.add(a.getDestino());
 
-                    } else {
-                        listVertices.add(a.getFonte());
+                for (Aresta aresta : Arestas) {
+                    if (aresta.getFonte().equals(aresta.getDestino())) {
+                        return null;
                     }
                 }
             }
         }
-        if(listVertices.size() > 0){
-         removeFolhas(listVertices);
+
+        List<Vertice> listVerticesFolhas = new ArrayList<>();
+
+        for (Vertice vertice : Vertices) {
+            
+//                if (vertice.getArestas().size() == 1 && vertice.getArestas().get(0).idCor != 1) {
+//                    Aresta a = vertice.getArestas().get(0);
+//                    if (a.getDestino().equals(vertice)) {
+//                        listVerticesFolhas.add(a.getDestino());
+//
+//                    } else {
+//                        listVerticesFolhas.add(a.getFonte());
+//                    }
+//                } else if (vertice.getArestas().size() < 3) {
+//                    for (Aresta A : vertice.getArestas()) {
+//                        if (A.getDestino().equals(vertice) && A.getFonte().idCor == 1) {
+//                            listVerticesFolhas.add(vertice);
+//                        } else if (A.getFonte().equals(vertice) && A.getDestino().idCor == 1) {
+//                            listVerticesFolhas.add(vertice);
+//                        }
+//                    }
+//                } else {
+            if (vertice.idCor != 1) {
+                int cont = 0;
+
+                for (Aresta A : vertice.getArestas()) {
+                    if (A.idCor == 1) {
+                        cont++;
+                    }
+                }
+
+                if (cont == (vertice.getArestas().size() - 1)) {
+                    listVerticesFolhas.add(vertice);
+                }
+            }
         }
-        while (this.vertices.size() > 2) {
+
+        if (listVerticesFolhas.size()
+                > 0) {
+            removeFolhas(listVerticesFolhas);
+        }
+
+        while (!achouCentro()) {
             centroGrafo();
         }
+
+//        for (Vertice V : Vertices) {
+//            if (!vertices.contains(V)) {
+//                vertices.add(V);
+//            }
+//        }
+//
+//        for (Aresta A : Arestas) {
+//            if (!arestas.contains(A)) {
+//                arestas.add(A);
+//            }
+//        }
         return updateGrafo();
     }
 
-    private void removeFolhas(List<Vertice> vertices) {
-        Vertice v;
-        for (Vertice vertice : vertices) {
-            Aresta a = vertice.getArestas().remove(0);
-            if (a.getDestino().equals(vertice)) {
-                v = a.getFonte();
-            } else {
-                v = a.getDestino();
+    private void removeFolhas(List<Vertice> verticesFolhas) {
+
+        for (Vertice vertice : verticesFolhas) {
+            vertice.idCor = 1;
+            for (Aresta a : vertice.getArestas()) {
+                a.idCor = 1;
             }
-            int indice = 0;
-            for (Aresta av : v.getArestas()) {
-                if (a.equals(av)) {
-                    break;
-                }
-                indice++;
-            }
-            v.getArestas().remove(indice);
-            this.vertices.remove(vertice);
-            this.arestas.remove(a);
-            a.setFonte(null);
-            a.setDestino(null);
-            a = null;
         }
+    }
+
+//    private void removeFolhas(List<Vertice> verticesFolhas) {
+//        Vertice v;
+//        for (Vertice vertice : verticesFolhas) {
+//            for(Aresta a : vertice.getArestas()) {
+//            if (a.getDestino().equals(vertice)) {
+//                v = a.getFonte();
+//            } else {
+//                v = a.getDestino();
+//            }
+//            int indice = 0;
+//            for (Aresta av : v.getArestas()) {
+//                if (a.equals(av)) {
+//                    break;
+//                }
+//                indice++;
+//            }
+//
+//            MarcaCentro(indice, a);
+//            }
+//            
+////            v.getArestas().remove(indice);
+////            this.vertices.remove(vertice);
+////            this.arestas.remove(a);
+////            a.setFonte(null);
+////            a.setDestino(null);
+////            a = null;
+//        }
+//    }
+//
+//    private void MarcaCentro(int c, Aresta A) {
+//        vertices.get(c).idCor = 1;
+//        A.idCor = 1;
+//    }
+    private boolean achouCentro() {
+        int cont = 0;
+
+        for (Vertice V : Vertices) {
+            if (V.idCor != 1) {
+                cont++;
+            }
+        }
+        if (cont == 1 || cont == 2) {
+            return true;
+        }
+        return false;
+    }
+
+    public Component kruskal() {
+
+        List<Aresta> arestaAUX = new ArrayList<>();
+        for (Aresta A : arestas) {
+            arestaAUX.add(A);
+        }
+
+        int i = 1;
+        for (Vertice V : vertices) {
+            V.visitado = i;
+            i++;
+        }
+
+        List<Aresta> arestaOrdenada = new Ordenacao().quickSort(arestaAUX);//TODO
+        int n = vertices.size();
+        List<Aresta> listAresta = new ArrayList<>();
+//        Vertice v = vertices.get(0);
+
+//            int [] Vertices = new int [vertices.size()];
+//            
+//            for(int i = 1 ; i < vertices.size() ; i++ ) {
+//                Vertices[i-1] = i;
+//            }
+        while (listAresta.size() < n - 1 && arestaOrdenada.size() > 0) {
+            Aresta A = arestaOrdenada.remove(0);
+            Vertice V1 = A.getFonte();
+            Vertice V2 = A.getDestino();
+            if (V1.equals(V2) == false && (V1.visitado != V2.visitado)) {
+                A.idCor = 2;
+                Merge(V1.visitado, V2.visitado);
+                listAresta.add(A);
+            }
+        }
+
+        while (arestas.size() > 0) {
+            Aresta A = arestas.remove(0);
+            if (!listAresta.contains(A)) {
+                listAresta.add(A);
+            }
+        }
+
+        arestas = listAresta;
+
+        return updateGrafo();
+    }
+
+    private void Merge(int V1, int V2) {
+        for (Vertice V : vertices) {
+            if (V.visitado == V2) {
+                V.visitado = V1;
+            }
+        }
+
     }
 
     private Component updateGrafo() {
@@ -156,7 +301,7 @@ public class Grafo {
         Object parent = graph.getDefaultParent();
 
 //    CARREGA OS ESTILOS DAS ARESTAS, ARCO E VÉRTICE
-        mxStylesheet stylesheet = new Styles().carregaStylesDefaul(graph);
+        mxStylesheet stylesheet = new Styles().carregaStyles(graph);
 
 //    CARREGA O GRAFO COM AS COMPONENTES CONEXAS DESTACADAS
         graph.getModel().beginUpdate();
@@ -167,22 +312,38 @@ public class Grafo {
         try {
 
             for (Vertice vertice : getVertices()) {
-                vertice.visitado = false;
-                mxCell v = (mxCell) graph.insertVertex(parent, null, vertice
-                        .getRotulo(), vertice.getPosicao().getX(), vertice
-                        .getPosicao().getY(), vertice.getDimensao().getWidth(),
-                        vertice.getDimensao().getHeight(), "VERTICE");
-                System.out.println(v.toString());
-                mapeamento.put(vertice, v);
+                vertice.visitado = 0;
+                if (vertice.idCor == 1) {
+                    mxCell v = (mxCell) graph.insertVertex(parent, null, vertice
+                            .getRotulo(), vertice.getPosicao().getX(), vertice
+                            .getPosicao().getY(), vertice.getDimensao().getWidth(),
+                            vertice.getDimensao().getHeight(), "VERTICE");
+                    System.out.println(v.toString());
+                    mapeamento.put(vertice, v);
+                } else {
+                    mxCell v = (mxCell) graph.insertVertex(parent, null, vertice
+                            .getRotulo(), vertice.getPosicao().getX(), vertice
+                            .getPosicao().getY(), vertice.getDimensao().getWidth(),
+                            vertice.getDimensao().getHeight(), "N_VERTICE");
+                    System.out.println(v.toString());
+                    mapeamento.put(vertice, v);
+                }
             }
 
 //    PEGA AS ARESTAS DO GRAFO
             for (Aresta aresta : getArestas()) {
 
-                mxCell e = (mxCell) graph.insertEdge(parent, null,
-                        aresta.getRotulo(), mapeamento.get(aresta.getFonte()),
-                        mapeamento.get(aresta.getDestino()), "ARESTA");
-                System.out.println(e.toString());
+                if (aresta.idCor == 1) {
+                    mxCell e = (mxCell) graph.insertEdge(parent, null,
+                            aresta.getRotulo(), mapeamento.get(aresta.getFonte()),
+                            mapeamento.get(aresta.getDestino()), "ARESTA");
+                    System.out.println(e.toString());
+                } else {
+                    mxCell e = (mxCell) graph.insertEdge(parent, null,
+                            aresta.getRotulo(), mapeamento.get(aresta.getFonte()),
+                            mapeamento.get(aresta.getDestino()), "N_ARESTA");
+                    System.out.println(e.toString());
+                }
             }
 
         } finally {
@@ -210,40 +371,4 @@ public class Grafo {
         }
         return str.toString();
     }
-
-    /*
-    função Kruskal(G = (N,A): grafo): conjunto de arestas 
-        Ordenar A pelos valores de peso 
-        n := número de vértices em N 
-        T := {} 
-        Inicializar o conjunto de componentes (cada vértice de G é um componente) 
-            enquanto T contém menos de n-1 arestas e A não vazio 
-                fazer (u,v) := aresta de menor peso de A 
-                    A := A - (u,v) 
-                    comp_u := find(u) 
-                    comp_v := find(v) 
-                se comp_u ≠ comp_v 
-                    então merge(comp_u,comp_v) 
-                    T := T U {(u,v)} 
-                fim se 
-            fim enquanto 
-        retornar T
-    */
-    
-    public Component kruskal(){
-        List<Aresta> arestaOrdenada = new Ordenacao().quickSort(arestas);//TODO
-        int n = vertices.size();
-        List<Aresta> listAresta = new ArrayList<>();
-        Vertice v = vertices.get(0);
-            while(listAresta.size() < n-1 && arestaOrdenada.size() > 0){
-                Aresta A = arestaOrdenada.remove(0);
-                Vertice V1 = A.getFonte();
-                Vertice V2 = A.getDestino();
-                if(V1.equals(V2) && (V1.visitado == false || V2.visitado == false)) 
-                    listAresta.add(A);
-            }
-        
-        return updateGrafo();
-    }
-    
 }

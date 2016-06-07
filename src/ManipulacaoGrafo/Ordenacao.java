@@ -17,6 +17,7 @@ public class Ordenacao {
 
     public List<Aresta> quickSort(List<Aresta> a) {
         Aresta[] aresta = new Aresta[a.size()];
+        Aresta[] arestaAUX = new Aresta[a.size()];
         int inicio = 0;
         int fim = 0;
         for(Aresta A : a) {
