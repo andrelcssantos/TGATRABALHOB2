@@ -11,7 +11,7 @@ public class Vertice {
     private String rotulo;
     private Point posicao;
     private Dimension dimensao;
-    public int visitado = 0;
+    public int componente = 0;
     private List<Aresta> arestas;
     public int idCor;
     
